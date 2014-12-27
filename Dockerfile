@@ -7,14 +7,17 @@
 # Pull base image.
 FROM dockerfile/nodejs
 
-# Install Ghost
+RUN npm -g install grunt-cli
+
+# Install Ghost.
 RUN \
-  cd /tmp && \
-  wget https://ghost.org/zip/ghost-latest.zip && \
-  unzip ghost-latest.zip -d /ghost && \
-  rm -f ghost-latest.zip && \
+  git clone https://github.com/mbrock/Ghost.git /ghost
+RUN \
   cd /ghost && \
-  npm install --production && \
+  npm install && \
+  grunt init && \
+  grunt prod
+RUN \
   sed 's/127.0.0.1/0.0.0.0/' /ghost/config.example.js > /ghost/config.js && \
   useradd ghost --home /ghost
 
